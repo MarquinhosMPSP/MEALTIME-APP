@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, ImageBackground, Image, StyleSheet, TextInput, Button } from 'react-native'
 import loginService from '../../services/loginService'
 
-const Login = () => {
+const Login = ( {navigation}) => {
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -13,6 +13,10 @@ const Login = () => {
             // console.log(response);
         }
     }
+
+    function GotoMesas () {
+        navigation.navigate('Home')         
+    };
 
     return (
         <View style={styles.container}>
@@ -41,10 +45,11 @@ const Login = () => {
                         title="Fazer login"
                         disabled={!username || !password}
                         color="#ffc127"
-                        onPress={() => requestLogin()} />
+                        onPress={GotoMesas} />
             </ImageBackground>
         </View>
     );
+
 }
 
 const styles = StyleSheet.create({
