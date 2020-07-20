@@ -1,22 +1,19 @@
 import React, { useState } from 'react'
 import { View, ImageBackground, Image, StyleSheet, TextInput, Button } from 'react-native'
-import loginService from '../../services/loginService'
+import { useAuth } from '../../contexts/auth'
 
-const Login = ( {navigation}) => {
+const Login = ({navigation}) => {
+
+    const { signed, user, login } = useAuth()
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
-    const requestLogin = async () => {
+    const requestLogin = () => {
         if (username && password) {
-            // const response = await loginService.login(username, password)
-            // console.log(response);
+            login(username, password)
         }
     }
-
-    function GotoMesas () {
-        navigation.navigate('Home')         
-    };
 
     return (
         <View style={styles.container}>
@@ -30,7 +27,6 @@ const Login = ( {navigation}) => {
                         style={styles.inputText}
                         autoCorrect={false}
                         autoCapitalize="none"
-                        autoFocus={true}
                         placeholder="Digite seu usuário"
                         onChangeText={setUsername} />
                     <TextInput
@@ -45,7 +41,7 @@ const Login = ( {navigation}) => {
                         title="Fazer login"
                         disabled={!username || !password}
                         color="#ffc127"
-                        onPress={GotoMesas} />
+                        onPress={requestLogin} />
             </ImageBackground>
         </View>
     );
