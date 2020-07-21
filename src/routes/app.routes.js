@@ -9,7 +9,7 @@ const AppStack = createStackNavigator()
 const LogoTitle = () => (
     <Image 
         source={require("./../assets/img/logo-black.png")} 
-        style={{ width: 160, resizeMode: 'contain' }} />
+        style={{ width: 160, resizeMode: 'contain', alignSelf: 'center' }} />
 )
 
 const headerTitle = props => <LogoTitle {...props} />
