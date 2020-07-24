@@ -8,12 +8,15 @@ const Home = () => {
 
     const { logout } = useAuth()
 
+    const { navigate } = this.props.navigation;
+
     return (
         <SafeAreaView style={styles.container}>
             
             <ScrollView style={styles.scrollView} pagingEnabled={true}>
                 <TextInput style={styles.inputText} placeholder="Encontre um restaurante..." />
                 <Button title="logout" onPress={() => logout()} />
+                <Button buttonStyle={styles.button} title="Clica vagabundo" onPress={() => navigation.navigate('Restaurante') }></Button>
 
                 <View style={styles.container}>
                     <Text style={styles.textTitle}>Visitados recentemente</Text>
@@ -45,6 +48,7 @@ const Home = () => {
                     <Image style={styles.imagem} source={require("./../../assets/img/logo-black.png")}/>
                     <Image style={styles.imagem} source={require("./../../assets/img/logo-black.png")}/>
                 </View>
+                
             </ScrollView>  
         </SafeAreaView>
     );

@@ -3,6 +3,7 @@ import { Image } from 'react-native'
 import { createStackNavigator } from "@react-navigation/stack";
 
 import Home from '../pages/Home'
+import Restaurante from '../pages/Restaurante'
 
 const AppStack = createStackNavigator()
 
@@ -17,6 +18,7 @@ const headerTitle = props => <LogoTitle {...props} />
 const AppRoutes = () => (
     <AppStack.Navigator screenOptions={{ headerTitle }}>
         <AppStack.Screen name="Home" component={Home}/>
+        <AppStack.Screen name="Restaurante" component={Restaurante}/>
     </AppStack.Navigator>
 )
 
