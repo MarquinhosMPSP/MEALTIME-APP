@@ -4,11 +4,10 @@ import { useAuth } from '../../contexts/auth';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
-const Home = () => {
+const Home = ( {navigation} ) => {
 
     const { logout } = useAuth()
 
-    const { navigate } = this.props.navigation;
 
     return (
         <SafeAreaView style={styles.container}>
@@ -16,27 +15,30 @@ const Home = () => {
             <ScrollView style={styles.scrollView} pagingEnabled={true}>
                 <TextInput style={styles.inputText} placeholder="Encontre um restaurante..." />
                 <Button title="logout" onPress={() => logout()} />
-                <Button buttonStyle={styles.button} title="Clica vagabundo" onPress={() => navigation.navigate('Restaurante') }></Button>
 
                 <View style={styles.container}>
                     <Text style={styles.textTitle}>Visitados recentemente</Text>
                     <Image style={styles.imagem} source={require("./../../assets/img/logo-black.png")}/>
                     <Image style={styles.imagem} source={require("./../../assets/img/logo-black.png")}/>
+                    <Button buttonStyle={styles.button} title="Clica vagabundo" onPress={() => navigation.navigate('Restaurante')}></Button>
                 </View>
                 <View style={styles.container}>
-                    <Text style={styles.textTitle}>Visitados recentemente</Text>
+                    <Text style={styles.textTitle}>Restaurantes + visitados</Text>
                     <Image style={styles.imagem} source={require("./../../assets/img/logo-black.png")}/>
                     <Image style={styles.imagem} source={require("./../../assets/img/logo-black.png")}/>
+                    <Button buttonStyle={styles.button} title="Clica vagabundo" onPress={() => navigation.navigate('Restaurante')}></Button>
                 </View>
                 <View style={styles.container}>
-                    <Text style={styles.textTitle}>Visitados recentemente</Text>
+                    <Text style={styles.textTitle}>Comida mexicana</Text>
                     <Image style={styles.imagem} source={require("./../../assets/img/logo-black.png")}/>
                     <Image style={styles.imagem} source={require("./../../assets/img/logo-black.png")}/>
+                    <Button buttonStyle={styles.button} title="Clica vagabundo" onPress={() => navigation.navigate('Restaurante')}></Button>
                 </View>
                 <View style={styles.container}>
-                    <Text style={styles.textTitle}>Visitados recentemente</Text>
+                    <Text style={styles.textTitle}>Comida italiana</Text>
                     <Image style={styles.imagem} source={require("./../../assets/img/logo-black.png")}/>
                     <Image style={styles.imagem} source={require("./../../assets/img/logo-black.png")}/>
+                    <Button buttonStyle={styles.button} title="Clica vagabundo" onPress={() => navigation.navigate('Restaurante')}></Button>
                 </View>
                 <View style={styles.container}>
                     <Text style={styles.textTitle}>Visitados recentemente</Text>
@@ -52,6 +54,7 @@ const Home = () => {
             </ScrollView>  
         </SafeAreaView>
     );
+
 }
 
 const styles = StyleSheet.create({
