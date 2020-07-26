@@ -3,17 +3,19 @@ import { SafeAreaView, Image, StyleSheet, TextInput, Button, View, Text, ImageBa
 import { ScrollView } from 'react-native-gesture-handler';
 
 
-const Restaurante = () => {
+const Restaurante = ( { route, navigation}) => {
 
+    const {nomeRestaurante, descRestaurante} = route.params
     
+    console.log(nomeRestaurante)
 
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView} pagingEnabled={true}>
                 <View>
-                    <ImageBackground source={require('./../../assets/img/mcdonalds.jpg')} style={styles.imagem}>
-                        <Text style={styles.textTitle}> McDonald's</Text>
-                        <Text style={styles.text}> Meu pau pequeno</Text>
+                    <ImageBackground source={require('./../../assets/img/rest.jpg')} style={styles.imagem}>
+                        <Text style={styles.textTitle}> {nomeRestaurante} </Text>
+                        <Text style={styles.text}> {descRestaurante}</Text>
                     </ImageBackground>
                 </View>
                 <View>
@@ -21,12 +23,48 @@ const Restaurante = () => {
                 </View>
                 <View>   
                     <ImageBackground source={require('./../../assets/img/bigmac.jpg')} style={styles.lanche}>
-                        <Text style={{alignSelf: 'center', color: '#fff', fontSize: 22, marginTop: 50}}> Big Mac + Batata + Meu pau</Text>
+                        <Text style={{alignSelf: 'center', color: '#fff', fontSize: 22, marginTop: 50}}>
+
+                        </Text>
                     </ImageBackground>
                 </View>
-                <View style={{marginTop: 15}}>
+                <View style={{marginTop: 10}}>
                     <Text style={styles.text2}> Reserve sua mesa</Text>
-                </View>      
+                </View>
+                <View style={{marginTop: 15}}>
+                    <Text style={styles.text3}> Quantidade de pessoas</Text>
+                </View>
+                <View
+                    style={{
+                        marginTop: 25,
+                        borderBottomColor: '#C9C9C9',
+                        borderBottomWidth: 1,
+                        marginLeft: 20,
+                        marginRight: 20
+                    }}
+                />
+                <View style={{marginTop: 5}}>
+                    <Text style={styles.text3}> Horário da reserva</Text>
+                </View>
+                <View
+                    style={{
+                        marginTop: 25,
+                        borderBottomColor: '#C9C9C9',
+                        borderBottomWidth: 1,
+                        marginLeft: 20,
+                        marginRight: 20
+                    }}
+                />
+                 <View style={{marginTop: 5}}>
+                    <Text style={styles.text3}> Observações</Text>
+                    <TextInput style={{marginTop: 5, marginLeft: 40, fontSize: 11}}> Escreva aqui sua observação...</TextInput>
+                </View>
+                <View style={{marginTop: 15}}>
+                <Button style={styles.button} 
+                        title="Reservar mesa"
+                        color="#ffc127"
+                        />  
+                </View>     
             </ScrollView>  
         </SafeAreaView>
     );
@@ -47,21 +85,35 @@ const styles = StyleSheet.create({
     textTitle:{
         marginLeft: 10,
         fontSize: 30,
-        color: '#000',
+        color: '#fff',
         marginTop: 30,
-        fontWeight: 'bold'  
+        fontWeight: 'bold',
+        textShadowColor: '#000',
+        textShadowOffset: {width: -1, height: 3},
+        textShadowRadius: 10
     },
     text:{
         marginLeft: 15,
         fontSize: 15,
-        color: '#000',
-        marginTop: 10
+        color: '#fff',
+        marginTop: 10,
+        fontWeight: 'bold',
+        textShadowColor: '#000',
+        textShadowOffset: {width: -1, height: 1},
+        textShadowRadius: 10
     },
     text2:{
         color: '#524D4C',
         marginLeft: 18,
-        fontSize: 17,
+        fontSize: 15,
         marginTop: 10,
+        fontWeight: 'bold'
+    },
+    text3: {
+        color: '#524D4C',
+        marginLeft: 18,
+        fontSize: 13,
+        marginTop: 15,
         fontWeight: 'bold'
     },
     imagem: {
@@ -85,6 +137,17 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         shadowOpacity: 0.1,
         elevation: 7,
+    },
+    button: {
+        marginTop: 15,
+        marginLeft: 20,
+        marginRight: 20,
+        paddingTop:10,
+        paddingBottom:10,
+        backgroundColor:'#ffc127',
+        borderRadius:10,
+        borderWidth: 1,
+        borderColor: '#fff'
     },
 });
 
