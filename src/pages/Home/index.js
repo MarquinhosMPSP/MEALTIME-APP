@@ -83,7 +83,7 @@ const Home = ({ navigation }) => {
                                     renderItem={({ item }) =>
                                         <View style={styles.section}>
                                             <TouchableOpacity style={styles.itemBox} 
-                                            onPress={() => navigation.navigate('Restaurante')}>
+                                            onPress={() => navigation.navigate('Restaurante', { restaurante: item })}>
                                                 <View style={styles.textContainer}>
                                                     <Text style={styles.text}>{item.nomeRestaurante}</Text>
                                                 </View>
