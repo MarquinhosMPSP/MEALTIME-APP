@@ -17,7 +17,14 @@ const Restaurante = ({ route, navigation }) => {
     const makeReservation = async(idMesa) => {
         const result = await reservationService.makeReservation(restaurante.idRestaurante, user.idUsuario, idMesa, new Date(date).toISOString())
         if (result) {
-            AsyncStorage.setItem('idComanda', result.idComanda)
+            Alert.alert(
+                "Reserva requisitada",
+                `Aguarde o restaurante ${result.nomeRestaurante} confirmar sua reserva.`,
+                [
+                    { text: "OK" }
+                ],
+                { cancelable: false }
+            );
         }
     }
 
