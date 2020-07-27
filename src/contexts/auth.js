@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
     async function login(username, password) {
         const response = await authService.login(username, password)
 
-        if (response && response.data) {
+        if (response && response.data && response.status === 200) {
             const { usuario, token } = response.data
 
             setUser(usuario)
@@ -38,7 +38,9 @@ export const AuthProvider = ({ children }) => {
                 await AsyncStorage.setItem('user', JSON.stringify(usuario))
                 await AsyncStorage.setItem('token', token)
             }
+            return null
         }
+        return response.data
     }
 
     function logout() {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ImageBackground, Image, StyleSheet, TextInput, Button } from 'react-native'
+import { View, ImageBackground, Image, StyleSheet, TextInput, Button, Alert } from 'react-native'
 import { useAuth } from '../../contexts/auth'
 
 const Login = ({navigation}) => {
@@ -9,9 +9,19 @@ const Login = ({navigation}) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
-    const requestLogin = () => {
+    const requestLogin = async () => {
         if (username && password) {
-            login(username, password)
+            const response = await login(username, password)
+            if (response) {
+                Alert.alert(
+                    "Falha ao autenticar",
+                    response.message,
+                    [
+                        { text: "OK" }
+                    ],
+                    { cancelable: false }
+                );
+            }
         }
     }
 

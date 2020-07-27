@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { SafeAreaView, Image, StyleSheet, TextInput, Button, View, Text, ImageBackground, TouchableOpacity, Alert } from 'react-native'
+import React, { useState } from 'react'
+import { SafeAreaView, StyleSheet, TextInput, Button, View, Text, ImageBackground, TouchableOpacity, Alert } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Icon from 'react-native-vector-icons/MaterialIcons'
-import reservationService from '../../services/reservationService';
-import { useAuth } from '../../contexts/auth';
 import AsyncStorage from '@react-native-community/async-storage';
+import Icon from 'react-native-vector-icons/MaterialIcons'
+import { useAuth } from '../../contexts/auth';
+import reservationService from '../../services/reservationService';
 
 const Restaurante = ({ route, navigation }) => {
     const { user } = useAuth()
@@ -16,7 +16,7 @@ const Restaurante = ({ route, navigation }) => {
 
     const makeReservation = async(idMesa) => {
         const result = await reservationService.makeReservation(restaurante.idRestaurante, user.idUsuario, idMesa, new Date(date).toISOString())
-        if (result && result.idComanda) {
+        if (result) {
             AsyncStorage.setItem('idComanda', result.idComanda)
         }
     }
