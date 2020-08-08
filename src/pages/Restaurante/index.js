@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { SafeAreaView, StyleSheet, TextInput, Button, View, Text, ImageBackground, TouchableOpacity, Alert } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useAuth } from '../../contexts/auth';
 import reservationService from '../../services/reservationService';
@@ -75,26 +74,16 @@ const Restaurante = ({ route, navigation }) => {
         setDate(currentDate);
     };
 
+    const goToFoodMenu = () => navigation.navigate('Cardapio', { restaurante })
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollView} pagingEnabled={true}>
-                <View>
-                    <ImageBackground source={require('./../../assets/img/rest.jpg')} style={styles.imagem}>
-                        <Text style={styles.textTitle}> {restaurante.nomeRestaurante} </Text>
-                        <Text style={styles.text}> {restaurante.descricao}</Text>
-                    </ImageBackground>
-                </View>
-                {/* <View>
-                    <Text style={styles.text2}> Prato do dia</Text>
-                </View>
-                <View>   
-                    <ImageBackground source={require('./../../assets/img/bigmac.jpg')} style={styles.lanche}>
-                        <Text style={{alignSelf: 'center', color: '#fff', fontSize: 22, marginTop: 50}}>
-
-                        </Text>
-                    </ImageBackground>
-                </View> */}
-                <View style={{ marginTop: 10 }}>
+                <ImageBackground source={require('./../../assets/img/rest.jpg')} style={styles.imagem}>
+                    <Text style={styles.textTitle}> {restaurante.nomeRestaurante} </Text>
+                    <Text style={styles.text}> {restaurante.descricao}</Text>
+                </ImageBackground>
+                <View style={{ margin: 20 }}>
                     <Text style={styles.text2}>Reserve sua mesa</Text>
                 </View>
                 <View style={styles.row}>
@@ -113,14 +102,12 @@ const Restaurante = ({ route, navigation }) => {
                 </View>
                 <View
                     style={{
-                        marginTop: 25,
                         borderBottomColor: '#C9C9C9',
                         borderBottomWidth: 1,
-                        marginLeft: 20,
-                        marginRight: 20
+                        margin: 20,
                     }}
                 />
-                <View style={{ marginTop: 5 }}>
+                <View style={{ marginTop: 5, marginHorizontal: 20 }}>
                     <Text style={styles.text3}>Data e hora da reserva</Text>
                     <DateTimePicker
                         testID="dateTimePicker"
@@ -133,14 +120,12 @@ const Restaurante = ({ route, navigation }) => {
                 </View>
                 <View
                     style={{
-                        marginTop: 25,
+                        margin: 20,
                         borderBottomColor: '#C9C9C9',
                         borderBottomWidth: 1,
-                        marginLeft: 20,
-                        marginRight: 20
                     }}
                 />
-                <View style={{ marginTop: 5 }}>
+                <View style={{ margin: 20 }}>
                     <Text style={styles.text3}>Observações</Text>
                     <TextInput
                         autoCorrect={false}
@@ -174,20 +159,16 @@ const styles = StyleSheet.create({
         marginTop: 15
     },
     textTitle: {
-        marginLeft: 10,
         fontSize: 30,
         color: '#fff',
-        marginTop: 30,
         fontWeight: 'bold',
         textShadowColor: '#000',
         textShadowOffset: { width: -1, height: 3 },
         textShadowRadius: 10
     },
     text: {
-        marginLeft: 15,
         fontSize: 15,
         color: '#fff',
-        marginTop: 10,
         fontWeight: 'bold',
         textShadowColor: '#000',
         textShadowOffset: { width: -1, height: 1 },
@@ -195,27 +176,27 @@ const styles = StyleSheet.create({
     },
     text2: {
         color: '#524D4C',
-        marginLeft: 18,
         fontSize: 18,
-        marginTop: 10,
         fontWeight: 'bold'
     },
     text3: {
         color: '#524D4C',
-        marginLeft: 18,
         fontSize: 14,
-        marginTop: 15,
         fontWeight: 'bold'
+    },
+    text4: {
+        fontSize: 20
+    },
+    imagemContainer: {
+        backgroundColor: '#000'
     },
     imagem: {
         resizeMode: "contain",
-        height: 150
+        height: 150,
+        padding: 20
     },
-
     lanche: {
         marginTop: 10,
-        marginLeft: 20,
-        marginRight: 20,
         resizeMode: 'contain',
         height: 140,
         borderRadius: 25 / 2,
@@ -231,8 +212,6 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 15,
-        marginLeft: 20,
-        marginRight: 20,
         paddingTop: 10,
         paddingBottom: 10,
         backgroundColor: '#ffc127',
@@ -241,7 +220,6 @@ const styles = StyleSheet.create({
         borderColor: '#fff'
     },
     areaText: {
-        marginHorizontal: 25,
         marginVertical: 10,
         backgroundColor: '#fff',
         padding: 10,
@@ -251,20 +229,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginEnd: 20
+        marginHorizontal: 20
     },
     btnBox: {
         flexDirection: "row",
         marginTop: 10
     },
     incDecBtn: {
-        fontSize: 25,
+        fontSize: 30,
         color: '#ffc127',
         marginHorizontal: 10
     },
-    text4: {
-        fontSize: 20
-    }
 });
 
 export default Restaurante

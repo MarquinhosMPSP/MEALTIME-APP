@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView, StyleSheet, TextInput, View, Text, Dimensions, TouchableOpacity, Image, FlatList } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import restaurantService from '../../services/restaurantService';
 
