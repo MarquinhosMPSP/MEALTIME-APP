@@ -7,6 +7,8 @@ import Home from '../pages/Home'
 import Restaurante from '../pages/Restaurante'
 import { useAuth } from '../contexts/auth';
 import Cardapio from '../pages/Cardapio';
+import ListaPedidos from '../pages/ListaPedidos';
+import ListaReservas from '../pages/ListaReservas';
 
 const AppStack = createStackNavigator()
 
@@ -18,7 +20,8 @@ const navigationOptions = {
 const homeNavigationOptions = () => {
     const { logout } = useAuth()
     return {
-        headerRight: () => <TouchableOpacity style={{ marginEnd: 20 }} onPress={() => logout()} >
+        headerRight: () => 
+        <TouchableOpacity style={{ marginEnd: 20 }} onPress={() => logout()} >
             <Icon name="exit-to-app" style={{ fontSize: 25, color: '#666' }} />
         </TouchableOpacity>
     }
@@ -26,17 +29,21 @@ const homeNavigationOptions = () => {
 
 const restaurantNavigationOptions = ({ navigation, params }) => {
     return {
-        headerRight: () => <TouchableOpacity style={{ marginEnd: 20 }} onPress={() => navigation.navigate('Cardapio', params)} >
-            <Icon name="restaurant" style={{ fontSize: 25, color: '#666' }} />
+        headerRight: () => 
+        <TouchableOpacity style={{ marginEnd: 20 }} onPress={() => navigation.navigate('ListaReservas', params)} >
+            <Icon name="bluetooth" style={{ fontSize: 25, color: '#666' }} />
         </TouchableOpacity>
+    
     }
 }
 
 const AppRoutes = () => (
     <AppStack.Navigator screenOptions={{ ...navigationOptions }}>
         <AppStack.Screen name="Home" component={Home} options={homeNavigationOptions} />
-        <AppStack.Screen name="Restaurante" component={Restaurante} options={restaurantNavigationOptions} />
+        <AppStack.Screen name="Restaurante" component={Restaurante} options={restaurantNavigationOptions}/>
         <AppStack.Screen name="Cardapio" component={Cardapio} />
+        <AppStack.Screen name="ListaPedidos" component={ListaPedidos}  />
+        <AppStack.Screen name="ListaReservas" component={ListaReservas}  />
     </AppStack.Navigator>
 )
 
