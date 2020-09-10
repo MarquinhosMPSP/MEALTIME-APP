@@ -12,7 +12,7 @@ const Cardapio = () => {
                 <Text style={styles.title}>McDonalds</Text>
                 <TouchableOpacity style={styles.addToCart}>
                     <Text style={{ marginRight: 10 }}>Itens (2)</Text>
-                    <Icon name="shopping-basket" style={styles.icon} />
+                    <Icon name="local-mall" style={styles.icon} />
                 </TouchableOpacity>
             </View>
             <View style={styles.menuTitle}>

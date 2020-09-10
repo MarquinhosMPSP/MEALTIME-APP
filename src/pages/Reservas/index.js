@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, FlatList, Image, TextInput, ScrollView, Button } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
-const ListaReservas = ({navigation}) => {
+const Reservas = ({navigation}) => {
 
     const [items, setItems] = useState([0,1])
 
@@ -152,4 +152,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default ListaReservas;
+export default Reservas;

@@ -18,7 +18,17 @@ const reservationService = {
         } catch (error) {
             return error.response
         }
-    }
+    },
+    async makeReservation(idRestaurante, idCliente, idMesa, dataReserva) {
+        try {
+            const response = await api.post('reservas', {
+                idRestaurante, idCliente, idMesa, dataReserva
+            })
+            return response ? response.data : []
+        } catch (error) {
+            return error.response
+        }
+    },
 }
 
 export default reservationService

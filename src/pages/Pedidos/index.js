@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, FlatList, Image, TextInput, ScrollView } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
-const ListaPedidos = () => {
+const Pedidos = () => {
 
     const [items, setItems] = useState([0,1,2,3])
 
@@ -178,4 +178,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default ListaPedidos;
+export default Pedidos;
