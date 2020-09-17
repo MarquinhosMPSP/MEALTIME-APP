@@ -13,12 +13,12 @@ const Restaurante = ({ route, navigation }) => {
     const [date, setDate] = useState(new Date());
     const [qtdPessoas, setQtdPessoas] = useState(1);
 
-    const makeReservation = async(idMesa) => {
+    const makeReservation = async (idMesa) => {
         const result = await reservationService.makeReservation(restaurante.idRestaurante, user.idUsuario, idMesa, new Date(date).toISOString())
         if (result) {
             Alert.alert(
                 "Reserva requisitada",
-                `Aguarde o restaurante ${result.nomeRestaurante} confirmar sua reserva.`,
+                `Aguarde o restaurante ${restaurante.nomeRestaurante} confirmar sua reserva.`,
                 [
                     { text: "OK" }
                 ],
@@ -27,7 +27,7 @@ const Restaurante = ({ route, navigation }) => {
         }
     }
 
-    const checkAvailability = async() => {
+    const checkAvailability = async () => {
         const result = await reservationService.checkAvailability(restaurante.idRestaurante, new Date(date).toISOString(), qtdPessoas)
 
         if (result.mesasDisponiveis && result.mesasDisponiveis.length > 0) {
@@ -136,10 +136,9 @@ const Restaurante = ({ route, navigation }) => {
                         style={styles.areaText} />
                 </View>
                 <View style={{ marginTop: 15 }}>
-                    <Button style={styles.button}
-                        onPress={checkAvailability}
-                        title="Reservar mesa"
-                        color="#ffc127" />
+                    <TouchableOpacity style={styles.buttonFinaliza} onPress={checkAvailability}>
+                        <Text style={{ alignSelf: 'center', color: 'white' ,  fontSize: 20}}>Reservar mesa (s)</Text>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -239,6 +238,13 @@ const styles = StyleSheet.create({
         fontSize: 30,
         color: '#ffc127',
         marginHorizontal: 10
+    },
+    buttonFinaliza: {
+        marginLeft: 25,
+        marginRight: 25,
+        padding: 10,
+        backgroundColor: '#ffc127',
+        borderRadius: 15,
     },
 });
 
