@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView, StyleSheet, TextInput, View, Text, Dimensions, TouchableOpacity, Image, FlatList } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { useAuth } from '../../contexts/auth';
 import restaurantService from '../../services/restaurantService';
+import websocketService from '../../services/websocketService'
 
 const SearchBar = ({ search }) => (
     <View style={styles.searchBar}>
@@ -16,6 +18,7 @@ const SearchBar = ({ search }) => (
 
 const Home = ({ navigation }) => {
 
+    const { user } = useAuth()
     const [data, setData] = useState([])
     const [restaurants, setRestaurants] = useState([])
     const [restaurantsByCategory, setRestaurantsByCategory] = useState({})
@@ -31,7 +34,9 @@ const Home = ({ navigation }) => {
                 setRestaurants(response)
             }
         }
+        const connecToWS = () => websocketService.connect(user.idUsuario)
         getRestaurants()
+        connecToWS()
     }, [])
 
     const resetData = () => {

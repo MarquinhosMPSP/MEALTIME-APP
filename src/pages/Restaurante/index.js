@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StyleSheet, TextInput, Button, View, Text, ImageBackground, TouchableOpacity, Alert } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useAuth } from '../../contexts/auth';
 import reservationService from '../../services/reservationService';
+import websocketService from '../../services/websocketService'
 
 const Restaurante = ({ route, navigation }) => {
     const { user } = useAuth()
@@ -12,6 +13,35 @@ const Restaurante = ({ route, navigation }) => {
 
     const [date, setDate] = useState(new Date());
     const [qtdPessoas, setQtdPessoas] = useState(1);
+
+    useEffect(() => {
+        const atualizarReserva = () => {
+            websocketService.listenTo('atualizou reserva', data => {
+                const reserva = data && data.length > 0 ? data[0] : null
+                if (reserva && reserva.status === 'aceita') {
+                    Alert.alert(
+                        "Reserva aceita",
+                        `O restaurante confirmou sua reserva, o número da sua comanda é ${reserva.idComanda}`,
+                        [
+                            { text: "OK" }
+                        ],
+                        { cancelable: false }
+                    );
+                } else {
+                    Alert.alert(
+                        "Reserva cancelada",
+                        `O restaurante cancelou seu pedido de reserva.`,
+                        [
+                            { text: "OK" }
+                        ],
+                        { cancelable: false }
+                    );
+                }
+            })
+        }
+        atualizarReserva()
+    }, [])
+
 
     const makeReservation = async(idMesa) => {
         const result = await reservationService.makeReservation(restaurante.idRestaurante, user.idUsuario, idMesa, new Date(date).toISOString())

@@ -80,7 +80,6 @@ target 'projeto' do
 
 
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   target 'projetoTests' do
     inherit! :complete
