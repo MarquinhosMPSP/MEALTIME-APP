@@ -1,29 +1,7 @@
 import React, { useState } from 'react'
 import { View, ImageBackground, Image, StyleSheet, TextInput, Button, Alert } from 'react-native'
-import { useAuth } from '../../contexts/auth'
 
-const Login = ({navigation}) => {
-
-    const { signed, user, login } = useAuth()
-
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-
-    const requestLogin = async () => {
-        if (username && password) {
-            const response = await login(username, password)
-            if (response) {
-                Alert.alert(
-                    "Falha ao autenticar",
-                    response.message,
-                    [
-                        { text: "OK" }
-                    ],
-                    { cancelable: false }
-                );
-            }
-        }
-    }
+const CadastroUser = ({navigation}) => {
 
     return (
         <View style={styles.container}>
@@ -37,28 +15,34 @@ const Login = ({navigation}) => {
                         style={styles.inputText}
                         autoCorrect={false}
                         autoCapitalize="none"
-                        placeholder="Digite seu usuário"
-                        onChangeText={setUsername} />
+                        placeholder="Digite o seu nome"
+                        />
                     <TextInput
                         style={styles.inputText}
                         autoCorrect={false}
                         autoCapitalize="none"
                         secureTextEntry={true}
-                        placeholder="Digite sua senha"
-                        onChangeText={setPassword} />
-                        
-            </ImageBackground>
-            <Button 
+                        placeholder="Digite uma senha"
+                        />
+                    <TextInput
+                        style={styles.inputText}
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        secureTextEntry={true}
+                        placeholder="Digite o seu login"
+                        />
+                    <Button 
+                        buttonStyle={styles.button}
+                        title="Cadastrar"
+                        color="#ffc127"
+                        onPress={() => alert("Recebido") } 
+                        />    
+                    <Button 
                         buttonStyle={styles.button}
                         title="Fazer login"
-                        disabled={!username || !password}
                         color="#ffc127"
-                        onPress={requestLogin} />
-                    <Button
-                        buttonStyle={styles.button}
-                        title="Cadastre-se!"
-                        color="#ffc127"
-                        onPress={() => navigation.navigate('CadastroUser')} />
+                        onPress={() => navigation.navigate('Login')} />
+            </ImageBackground>
         </View>
     );
 
@@ -108,4 +92,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Login
+export default CadastroUser
