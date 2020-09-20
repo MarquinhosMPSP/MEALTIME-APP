@@ -1,94 +1,69 @@
-import React, { useState } from "react";
-import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, FlatList, Image, TextInput, ScrollView } from "react-native";
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import React, { useEffect, useState } from "react";
+import { View, SafeAreaView, StyleSheet, Text, FlatList, TextInput, ScrollView } from "react-native";
+import { Dimensions } from "react-native";
 
-const Pedidos = () => {
+var width = Dimensions.get('window').width; //full width
 
-    const [items, setItems] = useState([0,1,2,3])
+const Pedidos = ({ route: { params }}) => {
+
+    const [pedidos, setPedidos] = useState([])
+
+    useEffect(() => {
+        const mountOrders = () => {
+            if (params && params.items && params.items.length > 0) {
+                const pedido = {
+                    idPedido: null,
+                    items: params.items,
+                    total: params.items.reduce((acc, cur) => acc += Number(cur.total), 0).toFixed(2)
+                }
+                setPedidos([...pedidos, pedido])
+            }
+        }
+        mountOrders()
+    }, [])
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Pedidos finalizados (4)</Text>
+                <Text style={styles.title}>Pedidos ({pedidos.length})</Text>
             </View>
             <ScrollView showsVerticalScrollIndicator={false}
+            horizontal={true}
             style={styles.menuContent}>
-                <FlatList data={items}
-                keyExtractor={item => item}
-                renderItem={() => 
-                    <View style={styles.itemRow}>
-                        <View>
-                            <Text style={styles.itemTitle}>Pedido #1</Text>
-                                <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
-                                    <View style={{width: '10%'}}>
-                                        <Text style={styles.itemContent}>1x</Text>
+                <FlatList data={pedidos}
+                keyExtractor={(item, index) => String(index)}
+                renderItem={({item}) => 
+                    <View style={styles.card}>
+                        <View style={{ marginVertical: 10 }}>
+                            <Text style={styles.itemTitle}>Pedido #{item.idPedido}</Text>
+                            <FlatList data={item.items}
+                            keyExtractor={(item, index) => String(index)}
+                            renderItem={({item}) => 
+                                <View style={styles.row}>
+                                    <View>
+                                        <Text style={styles.itemContent}>{item.qtd}x</Text>
                                     </View>
-                                    <View style={{width: '45%'}}>
-                                        <Text style={styles.itemContent2}>Big Mac</Text>
+                                    <View>
+                                        <Text numberOfLines={1} style={styles.itemContent}>{item.nome}</Text>
                                     </View>
-                                    <View style={{width: '45%'}}>
-                                        <Text style={{marginLeft: 55, fontSize: 18, marginBottom: 10}}>R$23,90</Text>
+                                    <View>
+                                        <Text style={styles.itemContent}>R${item.precoCalculado}</Text>
                                     </View>
-                                </View>
-                                <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
-                                    <View style={{width: '10%'}}>
-                                        <Text style={styles.itemContent}>1x</Text>
-                                    </View>
-                                    <View style={{width: '45%'}}>
-                                        <Text style={styles.itemContent2}>Coca Cola 500ml</Text>
-                                    </View>
-                                    <View style={{width: '45%'}}>
-                                        <Text style={{marginLeft: 55, fontSize: 18, marginBottom: 10}}>R$9,90</Text>
-                                    </View>
-                                </View>
+                                </View>}
+                            />
                         </View>
-                        
-                        <View
-                            style={{
+                        <View style={{
                                 borderBottomColor: '#C9C9C9',
                                 borderBottomWidth: 1,
                                 marginTop: 10,
                                 marginBottom: 10
-                            }}
-                        />
-                        <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
-                            <View style={{width: '50%'}}>
-                                <Text style={styles.itemContent}>Subtotal</Text>
-                            </View>
-                            <View style={{width: '50%'}}>
-                                <Text style={styles.itemContent2}>R$33,80</Text>
-                            </View>
-                        </View>
-                        <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
-                            <View style={{width: '50%'}}>
-                                <Text style={styles.itemContent}>Taxa de serviço</Text>
-                            </View>
-                            <View style={{width: '50%'}}>
-                                <Text style={styles.itemContent2}>R$3,80</Text>
-                            </View>
-                        </View>
-                        <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
-                            <View style={{width: '50%'}}>
+                            }}/>
+                        <View style={styles.row}>
+                            <View>
                                 <Text style={styles.statusTitle}>Total</Text>
                             </View>
-                            <View style={{width: '50%'}}>
-                                <Text style={styles.statusTitle2}>R$37,60</Text>
-                            </View>
-                        </View>
-                        <View
-                            style={{
-                                borderBottomColor: '#C9C9C9',
-                                borderBottomWidth: 1,
-                                marginTop: 10,
-                                marginBottom: 10
-                            }}
-                        />
-                        <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
-                            <View style={{width: '50%'}}>
-                                <Text style={styles.statusTitle}>Status</Text>
-                            </View>
-                            <View style={{width: '50%'}}>
-                                <Text style={styles.statusTitle}>Preparando</Text>
+                            <View>
+                                <Text style={styles.statusTitle}>R${item.total}</Text>
                             </View>
                         </View>
                     </View>
@@ -115,9 +90,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         marginTop: 10
     },
-    
-    itemRow: {
+    card: {
         flex: 1,
+        width: (width - 40),
         justifyContent: "space-between",
         marginVertical: 10,
         marginHorizontal: 20,
@@ -134,15 +109,15 @@ const styles = StyleSheet.create({
         elevation: 5,
         
     },
-    itemContent: {
-        marginLeft: 10,
-        fontSize: 18,
-        marginBottom: 10
+    row: {
+        flex: 1,
+        marginVertical: 10,
+        justifyContent: "space-between",
+        flexDirection: 'row'
     },
-    itemContent2: {
-        marginLeft: 70,
+    itemContent: {
+        marginHorizontal: 20,
         fontSize: 18,
-        marginBottom: 10
     },
     itemActions: {
         width: '30%',
@@ -156,13 +131,7 @@ const styles = StyleSheet.create({
     },
     statusTitle: {
         fontSize: 20,
-        marginBottom: 10,
-        marginLeft: 10,
-    },
-    statusTitle2: {
-        fontSize: 20,
-        marginBottom: 10,
-        marginLeft: 70,
+        marginHorizontal: 10,
     },
     total: {
         marginVertical: 10,

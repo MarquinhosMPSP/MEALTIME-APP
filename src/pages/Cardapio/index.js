@@ -1,17 +1,60 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, FlatList, Image, TextInput, ScrollView } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { Dimensions } from "react-native";
+import restaurantService from '../../services/restaurantService'
 
-const Cardapio = () => {
+var width = Dimensions.get('window').width; //full width
 
-    const [items, setItems] = useState([0,1,2,3])
+const Cardapio = ({ route: { params }, navigation }) => {
+
+    const [items, setItems] = useState([])
+    const [pedidos, setPedidos] = useState([])
+    const [data, setData] = useState([])
+    const [changes, setChanges] = useState(0)
+
+    initializeItem = data => data.map(item => ({ ...item, qtd: 0, total: item.precoCalculado.toFixed(2) }))
+
+    const handleItem = (item, action) => {
+        if (action === 'dec' && !item.qtd) return
+        item.qtd = action === 'add' ? item.qtd + 1 : item.qtd - 1
+        item.total = item.qtd ? (item.qtd * item.precoCalculado).toFixed(2) : item.precoCalculado.toFixed(2)
+        setChanges(changes + 1)
+    }
+
+    const addToCart = () => {
+        const pedidosSelecionados = items.filter(item => item.qtd > 0)
+        if (pedidosSelecionados && pedidosSelecionados.length > 0) {
+            setPedidos(pedidosSelecionados)
+        }
+    }
+
+    const searchOrders = text => {
+        setItems(data)
+        if (!text) return
+        const source = data
+        const filteredItems = source.filter(item => item.nome.toLowerCase().includes(text.toLowerCase()))
+        setItems(filteredItems)
+    }
+
+    useEffect(() => {
+        const getRestaurantMenu = async() => {
+            let data = await restaurantService.getRestaurantMenu(params.idRestaurante)
+            if (data && data.length > 0) {
+                data = initializeItem(data)
+                setItems(data)
+                setData(data)
+            }
+        }
+        getRestaurantMenu()
+    }, [])
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>McDonalds</Text>
-                <TouchableOpacity style={styles.addToCart}>
-                    <Text style={{ marginRight: 10 }}>Itens (2)</Text>
+                <Text style={styles.title}>{params.nomeRestaurante}</Text>
+                <TouchableOpacity style={styles.cart} onPress={() => navigation.navigate('Pedidos', { items: pedidos })}>
+                    <Text style={{ marginRight: 10 }}>Pedidos</Text>
                     <Icon name="local-mall" style={styles.icon} />
                 </TouchableOpacity>
             </View>
@@ -21,37 +64,45 @@ const Cardapio = () => {
                     <TextInput placeholder="Encontre um item..."
                         autoCorrect={false}
                         autoCapitalize="none"
+                        onChangeText={text => searchOrders(text)} 
                         style={styles.searchInput} />
                     <Icon name="search" style={styles.searchIcon} />
                 </View>
             </View>
             <ScrollView showsVerticalScrollIndicator={false}
+            horizontal={true}
             style={styles.menuContent}>
                 <FlatList data={items}
-                keyExtractor={item => item}
-                renderItem={() => 
+                keyExtractor={(item, index) => String(index)}
+                extraData={changes}
+                renderItem={({item}) => 
                     <View style={styles.itemRow}>
                         <View style={styles.itemContent}>
-                            <Text style={styles.itemTitle}>Big Mac</Text>
+                            <Text style={styles.itemTitle}>{item.nome}</Text>
                             <Text>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc turpis enim, mollis eu viverra eget, maximus nec odio. Fusce dictum ante nisi, et semper sem dapibus nec.
+                                {item.descricao}
                             </Text>
                         </View>
                         <View style={styles.itemActions}>
                             <View style={styles.btnBox}>
                                 <TouchableOpacity style={{ marginRight: 10 }}>
-                                    <Icon name="remove-circle" style={styles.incDecBtn} />
+                                    <Icon name="remove-circle" style={styles.incDecBtn} onPress={() => handleItem(item, 'dec')}/>
                                 </TouchableOpacity>
-                                <Text style={{ fontSize: 20 }}>1</Text>
-                                <TouchableOpacity style={{ marginLeft: 10 }}>
+                                <Text style={{ fontSize: 20 }}>{item.qtd}</Text>
+                                <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => handleItem(item, 'add')}>
                                     <Icon name="add-circle" style={styles.incDecBtn} />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={styles.total}>R$ 23,90</Text>
-                        </View>
+                            <Text style={styles.total}>R${item.total}</Text>
+                        </View> 
                     </View>
                 } />
             </ScrollView>
+            <View style={{ flex: 1, margin: 20, alignSelf: 'center' }}>
+                <TouchableOpacity onPress={addToCart}>
+                    <Text style={styles.orderBtn}>Fazer pedido</Text>
+                </TouchableOpacity> 
+            </View>
         </SafeAreaView>
     )
 }
@@ -103,7 +154,7 @@ const styles = StyleSheet.create({
     searchInput: {
         width: '90%'
     },
-    addToCart: {
+    cart: {
         flexDirection: 'row',
         alignItems: 'center'
     },
@@ -114,7 +165,8 @@ const styles = StyleSheet.create({
     itemRow: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: "space-between",
+        justifyContent: 'space-between',
+        width: (width - 40),
         marginVertical: 10,
         marginHorizontal: 20,
         backgroundColor: '#fff',
@@ -130,7 +182,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     itemContent: {
-        width: '60%',
+        width: '60%'
     },
     itemActions: {
         width: '30%',
@@ -153,6 +205,9 @@ const styles = StyleSheet.create({
         fontSize: 30,
         color: '#ffc127',
     },
+    orderBtn: {
+        fontSize: 18,
+    }
 })
 
 export default Cardapio;

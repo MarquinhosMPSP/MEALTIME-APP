@@ -19,6 +19,14 @@ const reservationService = {
             return error.response
         }
     },
+    async getReservations(idCliente) {
+        try {
+            const response = await api.get('reservas/cliente/' + idCliente)
+            return response ? response.data : []
+        } catch (error) {
+            return error.response
+        }
+    },
 }
 
 export default reservationService
