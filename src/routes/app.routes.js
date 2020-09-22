@@ -18,6 +18,7 @@ const navigationOptions = {
         style={{ width: 160, resizeMode: 'contain', alignSelf: 'center' }} />
 }
 
+
 const homeNavigationOptions = () => {
     const { logout } = useAuth()
     return {
@@ -32,14 +33,14 @@ const restaurantNavigationOptions = ({ navigation, params }) => {
     return {
         headerRight: () => 
         <TouchableOpacity style={{ marginEnd: 20 }} onPress={() => navigation.navigate('Reservas', params)} >
-            <Icon name="today" style={{ fontSize: 25, color: '#666' }} />
+            <Icon name="bluetooth" style={{ fontSize: 25, color: '#666' }} />
         </TouchableOpacity>
     
     }
 }
 
 const AppRoutes = () => (
-    <AppStack.Navigator screenOptions={{ ...navigationOptions }}>
+    <AppStack.Navigator screenOptions={{ ...navigationOptions}}>
         <AppStack.Screen name="Home" component={Home} options={homeNavigationOptions} />
         <AppStack.Screen name="Restaurante" component={Restaurante} options={restaurantNavigationOptions}/>
         <AppStack.Screen name="Cardapio" component={Cardapio} />

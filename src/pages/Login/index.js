@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ImageBackground, Image, StyleSheet, TextInput, Button, Alert } from 'react-native'
+import { View, ImageBackground, Image, StyleSheet, TextInput, Button, Alert, TouchableOpacity, Text } from 'react-native'
 import { useAuth } from '../../contexts/auth'
 
 const Login = ({navigation}) => {
@@ -40,25 +40,27 @@ const Login = ({navigation}) => {
                         placeholder="Digite seu usuário"
                         onChangeText={setUsername} />
                     <TextInput
-                        style={styles.inputText}
+                        style={styles.inputText2}
                         autoCorrect={false}
                         autoCapitalize="none"
                         secureTextEntry={true}
                         placeholder="Digite sua senha"
                         onChangeText={setPassword} />
-                        
-            </ImageBackground>
-            <Button 
+                    <Button 
                         buttonStyle={styles.button}
                         title="Fazer login"
                         disabled={!username || !password}
                         color="#ffc127"
                         onPress={requestLogin} />
+                    <View style={{marginBottom: 15}}></View> 
                     <Button
                         buttonStyle={styles.button}
-                        title="Cadastre-se!"
+                        title="Cadastre-se"
                         color="#ffc127"
-                        onPress={() => navigation.navigate('CadastroUser')} />
+                        onPress={() => navigation.navigate('CadastroUser')} /> 
+     
+            </ImageBackground>
+            
         </View>
     );
 
@@ -95,16 +97,27 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         color: 'gray'
     },
+    inputText2: {
+        height: 40,
+        width: '70%',
+        marginTop: 15,
+        marginBottom: 20,
+        paddingHorizontal: 15,
+        borderColor: 'gray',
+        borderRadius: 15,
+        borderWidth: 1,
+        backgroundColor: '#fff',
+        color: 'gray'
+    },
     button: {
-        marginRight:40,
-        marginLeft:40,
+        marginRight:30,
+        marginLeft:30,
         marginTop:10,
-        paddingTop:10,
-        paddingBottom:10,
         backgroundColor:'#ffc127',
         borderRadius:10,
         borderWidth: 1,
-        borderColor: '#fff'
+        borderColor: '#fff',
+        
     }
 });
 

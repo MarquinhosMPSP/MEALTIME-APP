@@ -1,7 +1,26 @@
 import React, { useState } from 'react'
 import { View, ImageBackground, Image, StyleSheet, TextInput, Button, Alert } from 'react-native'
+import cadastroService from '../../services/cadastroService'
 
 const CadastroUser = ({navigation}) => {
+
+    const [nome, setNome] = useState([])
+    const [login, setLogin] = useState([])
+    const [senha, setSenha] = useState([])
+
+
+    const signUp = async(nome, login, senha) => {
+        const result = await cadastroService.signUp(nome, login, senha)
+        if (result) {
+            Alert.alert(
+                `Usuário ${nome} cadastrado com sucesso!`,
+                [
+                    { text: "OK" }
+                ],
+                { cancelable: false }
+            );
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -16,6 +35,7 @@ const CadastroUser = ({navigation}) => {
                         autoCorrect={false}
                         autoCapitalize="none"
                         placeholder="Digite o seu nome"
+                        onChangeText={nome => setNome(nome)}
                         />
                     <TextInput
                         style={styles.inputText}
@@ -23,20 +43,22 @@ const CadastroUser = ({navigation}) => {
                         autoCapitalize="none"
                         secureTextEntry={true}
                         placeholder="Digite uma senha"
+                        onChangeText={senha => setSenha(senha)}
                         />
                     <TextInput
-                        style={styles.inputText}
+                        style={styles.inputText2}
                         autoCorrect={false}
                         autoCapitalize="none"
-                        secureTextEntry={true}
                         placeholder="Digite o seu login"
+                        onChangeText={login => setLogin(login)}
                         />
                     <Button 
                         buttonStyle={styles.button}
                         title="Cadastrar"
                         color="#ffc127"
-                        onPress={() => alert("Recebido") } 
-                        />    
+                        onPress={signUp} 
+                        />
+                    <View style={{marginBottom: 15}}></View>        
                     <Button 
                         buttonStyle={styles.button}
                         title="Fazer login"
@@ -72,6 +94,18 @@ const styles = StyleSheet.create({
         height: 40,
         width: '70%',
         marginTop: 15,
+        paddingHorizontal: 15,
+        borderColor: 'gray',
+        borderRadius: 15,
+        borderWidth: 1,
+        backgroundColor: '#fff',
+        color: 'gray'
+    },
+    inputText2: {
+        height: 40,
+        width: '70%',
+        marginTop: 15,
+        marginBottom: 20,
         paddingHorizontal: 15,
         borderColor: 'gray',
         borderRadius: 15,
