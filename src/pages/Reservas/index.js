@@ -15,13 +15,23 @@ const Reservas = ({navigation}) => {
     const { user } = useAuth()
     const [items, setItems] = useState([])
 
-    useEffect(() => {
-        const getReservations = async () => {
-            const data = await reservationService.getReservations(user.idUsuario)
-            if (data && data.reservasAbertas && data.reservasAbertas.length > 0) {
-                setItems(data.reservasAbertas)
+    const cancelReservation = async(idReserva) => {
+        if (idReserva) {
+            const response = await reservationService.finishReservation(idReserva)
+            if (response && response.status === 200) {
+                await getReservations()
             }
         }
+    }
+ 
+    const getReservations = async () => {
+        const data = await reservationService.getReservations(user.idUsuario)
+        if (data && data.reservasAbertas) {
+            setItems(data.reservasAbertas)
+        }
+    }
+
+    useEffect(() => {
         getReservations()
     }, [])
 
@@ -35,6 +45,11 @@ const Reservas = ({navigation}) => {
             style={styles.menuContent}>
                 <FlatList data={items}
                 keyExtractor={(item, index) => String(index)}
+                ListEmptyComponent={() => 
+                    <View style={styles.noData}>
+                        <Text>Não há reservas</Text>
+                    </View>
+                }
                 renderItem={({ item }) => 
                     <View style={styles.itemRow}>
                         <View>
@@ -97,7 +112,7 @@ const Reservas = ({navigation}) => {
                                     </TouchableOpacity>   
                                 </View>
                                 <View style={{marginRight: 10, width: '40%', alignSelf: 'center'}}>
-                                    <TouchableOpacity style={styles.buttonFinaliza}>
+                                    <TouchableOpacity style={styles.buttonFinaliza} onPress={() => cancelReservation(item.idReserva)}>
                                     <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
                                         <View style={{width: '70%'}}>
                                             <Text style={{alignSelf: 'center', color: 'white'}}>Finaliza</Text>
@@ -170,6 +185,11 @@ const styles = StyleSheet.create({
     },
     cardCol: {
         marginHorizontal: 10
+    },
+    noData: {
+        width: (width - 40),
+        marginVertical: 10,
+        marginHorizontal: 20,
     }
 })
 

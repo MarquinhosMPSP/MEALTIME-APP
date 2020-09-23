@@ -8,12 +8,21 @@ const CadastroUser = ({navigation}) => {
     const [login, setLogin] = useState([])
     const [senha, setSenha] = useState([])
 
-
-    const signUp = async(nome, login, senha) => {
+    const signUp = async() => {
         const result = await cadastroService.signUp(nome, login, senha)
-        if (result) {
+        if (result && result.status === 201) {
             Alert.alert(
+                'Usuário cadastrado',
                 `Usuário ${nome} cadastrado com sucesso!`,
+                [
+                    { text: "OK" }
+                ],
+                { cancelable: false }
+            );
+        } else {
+            Alert.alert(
+                'Falha ao cadastrar',
+                `Não foi possível cadastrar o usuário, verifique os dados inseridos.`,
                 [
                     { text: "OK" }
                 ],
@@ -55,8 +64,9 @@ const CadastroUser = ({navigation}) => {
                     <Button 
                         buttonStyle={styles.button}
                         title="Cadastrar"
+                        disabled={!login || !nome || !senha}
                         color="#ffc127"
-                        onPress={signUp} 
+                        onPress={() => signUp()} 
                         />
                     <View style={{marginBottom: 15}}></View>        
                     <Button 

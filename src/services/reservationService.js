@@ -27,6 +27,14 @@ const reservationService = {
             return error.response
         }
     },
+    async finishReservation(idReserva) {
+        try {
+            const response = await api.put('reservas/' + idReserva, { status: 'finalizada' })
+            return response
+        } catch (error) {
+            return error.response
+        }
+    },
 }
 
 export default reservationService

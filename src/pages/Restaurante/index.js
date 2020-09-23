@@ -30,7 +30,7 @@ const Restaurante = ({ route, navigation }) => {
                 } else {
                     Alert.alert(
                         "Reserva cancelada",
-                        `O restaurante cancelou seu pedido de reserva.`,
+                        `Sua reserva foi cancelada!`,
                         [
                             { text: "OK" }
                         ],

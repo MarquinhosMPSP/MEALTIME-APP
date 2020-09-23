@@ -33,7 +33,7 @@ const restaurantNavigationOptions = ({ navigation, params }) => {
     return {
         headerRight: () => 
         <TouchableOpacity style={{ marginEnd: 20 }} onPress={() => navigation.navigate('Reservas', params)} >
-            <Icon name="bluetooth" style={{ fontSize: 25, color: '#666' }} />
+            <Icon name="event-note" style={{ fontSize: 25, color: '#666' }} />
         </TouchableOpacity>
     
     }
