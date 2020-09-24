@@ -104,7 +104,7 @@ const Restaurante = ({ route, navigation }) => {
         setDate(currentDate);
     };
 
-    const goToFoodMenu = () => navigation.navigate('Cardapio', { restaurante })
+    const goToFoodMenu = () => navigation.navigate('Cardapio', { idRestaurante: restaurante.idRestaurante, nomeRestaurante: restaurante.nomeRestaurante, view: true })
 
     return (
         <SafeAreaView style={styles.container}>
@@ -155,19 +155,14 @@ const Restaurante = ({ route, navigation }) => {
                         borderBottomWidth: 1,
                     }}
                 />
-                <View style={{ margin: 20 }}>
-                    <Text style={styles.text3}>Observações</Text>
-                    <TextInput
-                        autoCorrect={false}
-                        autoCapitalize="none"
-                        multiline={true}
-                        numberOfLines={5}
-                        placeholder='Escreva aqui sua observação...'
-                        style={styles.areaText} />
+                <View style={{ marginTop: 15 }}>
+                    <TouchableOpacity style={styles.buttonCardapio} onPress={goToFoodMenu}>
+                        <Text style={{ alignSelf: 'center', color: 'white' ,  fontSize: 20}}>Ver cardápio</Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={{ marginTop: 15 }}>
                     <TouchableOpacity style={styles.buttonFinaliza} onPress={checkAvailability}>
-                        <Text style={{ alignSelf: 'center', color: 'white' ,  fontSize: 20}}>Reservar mesa (s)</Text>
+                        <Text style={{ alignSelf: 'center', color: 'white' ,  fontSize: 20}}>Reservar mesa</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -274,6 +269,13 @@ const styles = StyleSheet.create({
         marginRight: 25,
         padding: 10,
         backgroundColor: '#ffc127',
+        borderRadius: 15,
+    },
+    buttonCardapio: {
+        marginLeft: 25,
+        marginRight: 25,
+        padding: 10,
+        backgroundColor: '#868686',
         borderRadius: 15,
     },
 });

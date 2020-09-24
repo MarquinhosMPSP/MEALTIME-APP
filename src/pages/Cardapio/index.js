@@ -26,7 +26,7 @@ const Cardapio = ({ route: { params }, navigation }) => {
     const addToCart = async() => {
         const pedidosSelecionados = items.filter(item => item.qtd > 0)
         if (pedidosSelecionados && pedidosSelecionados.length > 0) {
-            const data = { pedidos: pedidosSelecionados, idComanda: params.idComanda, dataReserva: params.dataReserva }
+            const data = { pedidos: pedidosSelecionados, idComanda: params.idComanda, dataReserva: params.dataReserva, nomeRestaurante: params.nomeRestaurante }
             await orderService.makeOrder(data)
         }
     }
@@ -55,10 +55,14 @@ const Cardapio = ({ route: { params }, navigation }) => {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>{params.nomeRestaurante}</Text>
-                <TouchableOpacity style={styles.cart} onPress={() => navigation.navigate('Pedidos', { items: pedidos, idComanda: params.idComanda })}>
-                    <Text style={{ marginRight: 10 }}>Pedidos</Text>
-                    <Icon name="local-mall" style={styles.icon} />
-                </TouchableOpacity>
+                {
+                    !params.view ?
+                        <TouchableOpacity style={styles.cart} onPress={() => navigation.navigate('Pedidos', { items: pedidos, idComanda: params.idComanda })}>
+                            <Text style={{ marginRight: 10 }}>Pedidos</Text>
+                            <Icon name="local-mall" style={styles.icon} />
+                        </TouchableOpacity>
+                    : null
+                }
             </View>
             <View style={styles.menuTitle}>
                 <Text style={styles.subtitle}>Cardápio</Text>
@@ -86,25 +90,29 @@ const Cardapio = ({ route: { params }, navigation }) => {
                             </Text>
                         </View>
                         <View style={styles.itemActions}>
-                            <View style={styles.btnBox}>
-                                <TouchableOpacity style={{ marginRight: 10 }}>
-                                    <Icon name="remove-circle" style={styles.incDecBtn} onPress={() => handleItem(item, 'dec')}/>
-                                </TouchableOpacity>
-                                <Text style={{ fontSize: 20 }}>{item.qtd}</Text>
-                                <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => handleItem(item, 'add')}>
-                                    <Icon name="add-circle" style={styles.incDecBtn} />
-                                </TouchableOpacity>
-                            </View>
+                            { !params.view ?
+                                <View style={styles.btnBox}>
+                                    <TouchableOpacity style={{ marginRight: 10 }}>
+                                        <Icon name="remove-circle" style={styles.incDecBtn} onPress={() => handleItem(item, 'dec')}/>
+                                    </TouchableOpacity>
+                                    <Text style={{ fontSize: 20 }}>{item.qtd}</Text>
+                                    <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => handleItem(item, 'add')}>
+                                        <Icon name="add-circle" style={styles.incDecBtn} />
+                                    </TouchableOpacity>
+                                </View> : null
+                            }
                             <Text style={styles.total}>R${item.total}</Text>
                         </View> 
                     </View>
                 } />
             </ScrollView>
-            <View style={{ flex: 1, margin: 20, alignSelf: 'center' }}>
-                <TouchableOpacity onPress={addToCart}>
-                    <Text style={styles.orderBtn}>Fazer pedido</Text>
-                </TouchableOpacity> 
-            </View>
+            { !params.view ?
+                <View style={{ margin: 20 }}>
+                    <TouchableOpacity style={styles.orderBtn} onPress={addToCart}>
+                        <Text style={{ alignSelf: 'center', color: 'white', fontSize: 20}}>Fazer pedido</Text>
+                    </TouchableOpacity> 
+                </View> : null
+            }
         </SafeAreaView>
     )
 }
@@ -208,8 +216,11 @@ const styles = StyleSheet.create({
         color: '#ffc127',
     },
     orderBtn: {
-        fontSize: 18,
-    }
+        marginHorizontal: 25,
+        padding: 10,
+        backgroundColor: '#ffc127',
+        borderRadius: 15,
+    },
 })
 
 export default Cardapio;

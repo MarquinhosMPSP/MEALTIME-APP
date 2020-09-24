@@ -34,9 +34,7 @@ const Pedidos = ({ route: { params }}) => {
 
     const updatePedido = () => {
         websocketService.listenTo('atualizou pedido', data => {
-            if (data) {
-                mountOrders()
-            }
+            if (data) mountOrders()
         })
     }
 
