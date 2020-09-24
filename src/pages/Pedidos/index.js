@@ -32,15 +32,12 @@ const Pedidos = ({ route: { params }}) => {
         }
     }
 
-    const updatePedido = () => {
-        websocketService.listenTo('atualizou pedido', data => {
-            if (data) mountOrders()
-        })
-    }
+    websocketService.listenTo('atualizou pedido', data => {
+        if (data) mountOrders()
+    })
 
     useEffect(() => {
         mountOrders()
-        updatePedido()
     }, [])
 
     return (
