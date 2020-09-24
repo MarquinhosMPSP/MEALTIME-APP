@@ -100,7 +100,7 @@ const Reservas = ({navigation}) => {
                         </View>
                         <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row', marginTop: 20, marginBottom: 10}}>
                                 <View style={{marginLeft: 10, width: '40%', alignSelf: 'center'}}>
-                                    <TouchableOpacity style={styles.buttonCardapio} onPress={() => navigation.navigate('Cardapio', { idComanda: item.idComanda, idReserva: item.idReserva, idRestaurante: item.idRestaurante, nomeRestaurante: item.nomeRestaurante })}>
+                                    <TouchableOpacity style={styles.buttonCardapio} onPress={() => navigation.navigate('Cardapio', { idComanda: item.idComanda, idReserva: item.idReserva, idRestaurante: item.idRestaurante, nomeRestaurante: item.nomeRestaurante, dataReserva: item.dataReserva })}>
                                     <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
                                         <View style={{width: '70%'}}>
                                             <Text style={{alignSelf: 'center', color: 'white'}}>Cardápio</Text>

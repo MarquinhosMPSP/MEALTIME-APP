@@ -9,10 +9,18 @@ const restaurantService = {
             return error.response           
         }
     },
-    async makeOrder(idRestaurante) {
+    async makeOrder(data) {
         try {
-            const response = await api.get('restaurantes/cardapio/'+idRestaurante)
-            return response ? response.data : []
+            const response = await api.post('pedidos/novo', data)
+            return response
+        } catch (error) {
+            return error.response           
+        }
+    },
+    async getUsersOrderByOrderPad(idComanda) {
+        try {
+            const response = await api.get('pedidos/' + idComanda)
+            return response && response['data'] ? response['data'] : []
         } catch (error) {
             return error.response           
         }

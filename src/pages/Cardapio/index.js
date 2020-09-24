@@ -3,6 +3,7 @@ import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, FlatList, Image
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Dimensions } from "react-native";
 import restaurantService from '../../services/restaurantService'
+import orderService from '../../services/orderService'
 
 var width = Dimensions.get('window').width; //full width
 
@@ -13,19 +14,20 @@ const Cardapio = ({ route: { params }, navigation }) => {
     const [data, setData] = useState([])
     const [changes, setChanges] = useState(0)
 
-    initializeItem = data => data.map(item => ({ ...item, qtd: 0, total: item.precoCalculado.toFixed(2) }))
+    initializeItem = data => data.map(item => ({ ...item, qtd: 0, total: (item.precoCalculado || 0).toFixed(2) }))
 
     const handleItem = (item, action) => {
         if (action === 'dec' && !item.qtd) return
         item.qtd = action === 'add' ? item.qtd + 1 : item.qtd - 1
-        item.total = item.qtd ? (item.qtd * item.precoCalculado).toFixed(2) : item.precoCalculado.toFixed(2)
+        item.total = item.qtd ? (item.qtd * (item.precoCalculado || 0)).toFixed(2) : (item.precoCalculado || 0).toFixed(2)
         setChanges(changes + 1)
     }
 
-    const addToCart = () => {
+    const addToCart = async() => {
         const pedidosSelecionados = items.filter(item => item.qtd > 0)
         if (pedidosSelecionados && pedidosSelecionados.length > 0) {
-            setPedidos(pedidosSelecionados)
+            const data = { pedidos: pedidosSelecionados, idComanda: params.idComanda, dataReserva: params.dataReserva }
+            await orderService.makeOrder(data)
         }
     }
 
@@ -53,7 +55,7 @@ const Cardapio = ({ route: { params }, navigation }) => {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>{params.nomeRestaurante}</Text>
-                <TouchableOpacity style={styles.cart} onPress={() => navigation.navigate('Pedidos', { items: pedidos })}>
+                <TouchableOpacity style={styles.cart} onPress={() => navigation.navigate('Pedidos', { items: pedidos, idComanda: params.idComanda })}>
                     <Text style={{ marginRight: 10 }}>Pedidos</Text>
                     <Icon name="local-mall" style={styles.icon} />
                 </TouchableOpacity>
