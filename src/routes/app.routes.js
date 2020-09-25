@@ -10,9 +10,6 @@ import Restaurante from '../pages/Restaurante'
 import Cardapio from '../pages/Cardapio';
 import Pedidos from '../pages/Pedidos';
 import Reservas from '../pages/Reservas';
-import HomeGarcom from '../pages/HomeGarcom'
-import ComandaGarcom from '../pages/ComandaGarcom'
-import PedidoGarcom from '../pages/PedidoGarcom'
 
 const AppStack = createStackNavigator()
 
@@ -49,9 +46,6 @@ const AppRoutes = () => (
         <AppStack.Screen name="Cardapio" component={Cardapio} />
         <AppStack.Screen name="Pedidos" component={Pedidos}  />
         <AppStack.Screen name="Reservas" component={Reservas}  />
-        <AppStack.Screen name="HomeGarcom" component={HomeGarcom} options={homeNavigationOptions} />
-        <AppStack.Screen name="PedidoGarcom" component={PedidoGarcom}/>
-        <AppStack.Screen name="ComandaGarcom" component={ComandaGarcom} />
     </AppStack.Navigator>
 )
 

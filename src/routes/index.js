@@ -1,13 +1,13 @@
 import React from 'react'
-import { View, ActivityIndicator } from "react-native";
 
 import { useAuth } from '../contexts/auth'
 
 import AppRoutes from './app.routes'
 import AuthRoutes from './auth.routes'
+import GarcomRoutes from './garcom.routes'
 
 const Routes = () => {
-    const { signed, loading } = useAuth()
+    const { signed, loading, garcom } = useAuth()
 
     //if (loading) {
     //     return (
@@ -17,7 +17,11 @@ const Routes = () => {
     //     )
     // }
 
-    return signed ? <AppRoutes /> : <AuthRoutes />
+    if (signed) {
+        return garcom ? <GarcomRoutes /> : <AppRoutes /> 
+    }
+
+    return <AuthRoutes />
 }
 
 export default Routes

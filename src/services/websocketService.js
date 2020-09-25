@@ -8,6 +8,9 @@ class WebsocketService {
     listenTo(event, fn) {
         this._socket.on(event, fn)
     }
+    disconnect() {
+        this._socket.close()
+    }
 }
 
 const websocketInstance = new WebsocketService()

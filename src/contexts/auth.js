@@ -1,6 +1,8 @@
 import React, { createContext, useState, useEffect, useContext } from 'react'
 import AsyncStorage from "@react-native-community/async-storage";
 
+import websocketService from '../services/websocketService'
+
 import api from '../services/api';
 import authService from '../services/authService'
 
@@ -9,6 +11,7 @@ const AuthContext = createContext({})
 export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null)
+    const [garcom, setGarcom] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -32,6 +35,10 @@ export const AuthProvider = ({ children }) => {
 
             setUser(usuario)
 
+            if (usuario && usuario.idPerfil === 3) {
+                setGarcom(true)
+            }
+
             if (usuario && token) {
                 api.defaults.headers['x-access-token'] = token
     
@@ -45,10 +52,11 @@ export const AuthProvider = ({ children }) => {
 
     function logout() {
         AsyncStorage.clear().then(() => setUser(null))
+        websocketService.disconnect()
     }
 
     return (
-        <AuthContext.Provider value={{ signed: !!user, loading, user, login, logout }}>
+        <AuthContext.Provider value={{ signed: !!user, garcom, loading, user, login, logout }}>
             {children}
         </AuthContext.Provider>
     )
