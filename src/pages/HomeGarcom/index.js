@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
 import { View, ImageBackground, Image, StyleSheet, TextInput, Button, Alert, TouchableOpacity, Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { useAuth } from '../../contexts/auth';
 
 const HomeGarcom = ({navigation}) => {
+
+    const { user } = useAuth()
 
     return (
         <View style={styles.container}>
             
-            <Text style={styles.text}> Aeee corneta</Text>
+        <Text style={styles.text}>{user.nome}</Text>
 
             <TouchableOpacity style={{...styles.button, marginTop: 130}} onPress={() => navigation.navigate('ComandaGarcom')}>
                 <View style={{justifyContent: "space-between", alignItems: 'center', flexDirection: 'row'}}>

@@ -1,10 +1,15 @@
 import React, { useState } from 'react'
 import { View, ImageBackground, Image, StyleSheet, TextInput, Button, Alert, TouchableOpacity, Text } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { useAuth } from '../../contexts/auth';
+import reservationService from '../../services/reservationService';
 
-const ComandaGarcom = ({navigation}) => {
+const ComandaGarcom = ({navigation, route: { params }}) => {
 
+    const { user } = useAuth()
     const [qtdPessoas, setQtdPessoas] = useState(1);
+    const [comanda, setComanda] = useState(null);
+    const [mesa, setMesa] = useState(null);
 
     const increase = () => {
         setQtdPessoas((prevState) => {
@@ -19,6 +24,18 @@ const ComandaGarcom = ({navigation}) => {
             return prevState
         })
     }
+
+    const checkAvailability = async() => {
+        const mesas = await reservationService.checkAvailability(user.idRestaurante, new Date().toISOString(), qtdPessoas)
+        if (mesas.mesasDisponiveis && mesas.mesasDisponiveis.length > 0) {
+            const idMesa = mesas.mesasDisponiveis[0].idMesa
+            const reserva = await reservationService.makeReservation(user.idRestaurante, user.idUsuario, idMesa, new Date().toISOString())
+            if (reserva) {
+                setComanda(reserva.idComanda)
+                setMesa(reserva.nomeMesa)
+            }
+        }
+    } 
 
     return (
         <View style={styles.container}>
@@ -43,11 +60,16 @@ const ComandaGarcom = ({navigation}) => {
                 </View>
             </View>
             
-            <Text style={styles.text2}> A comanda criada: 1</Text>
-            <Text style={styles.text4}> Mesa reservada: 2</Text>
+            {
+                comanda && mesa ?
+                <>
+                    <Text style={styles.text2}> A comanda criada: {comanda}</Text>
+                    <Text style={styles.text4}> Mesa reservada: {mesa}</Text>
+                </> : null
+            }
                 
             <View>
-                <TouchableOpacity style={styles.buttonFinaliza}>
+                <TouchableOpacity style={styles.buttonFinaliza} onPress={() => checkAvailability()}>
                     <Text style={{ alignSelf: 'center', color: 'white' ,  fontSize: 15, fontWeight: "bold"}}>Gerar comanda</Text>
                 </TouchableOpacity>
             </View>      

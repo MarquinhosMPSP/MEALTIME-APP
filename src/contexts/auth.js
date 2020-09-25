@@ -11,19 +11,20 @@ const AuthContext = createContext({})
 export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null)
-    const [garcom, setGarcom] = useState(null)
+    const [garcom, setGarcom] = useState(false)
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        async function loadStoragedData() {
-            const [[,storagedUser], [,storagedToken]] = await AsyncStorage.multiGet(['user', 'token'])
+    async function loadStoragedData() {
+        const [[,storagedUser], [,storagedToken]] = await AsyncStorage.multiGet(['user', 'token'])
 
-            if (storagedUser && storagedToken) {
-                api.defaults.headers['x-access-token'] = storagedToken
-                setUser(JSON.parse(storagedUser))
-                setLoading(false)
-            }
+        if (storagedUser && storagedToken) {
+            api.defaults.headers['x-access-token'] = storagedToken
+            setUser(JSON.parse(storagedUser))
+            setLoading(false)
         }
+    }
+
+    useEffect(() => {
         loadStoragedData()
     }, [])
 
