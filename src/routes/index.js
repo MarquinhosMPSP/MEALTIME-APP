@@ -7,15 +7,7 @@ import AuthRoutes from './auth.routes'
 import GarcomRoutes from './garcom.routes'
 
 const Routes = () => {
-    const { signed, loading, garcom } = useAuth()
-
-    //if (loading) {
-    //     return (
-    //         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    //             <ActivityIndicator size="large" color="#999" />
-    //         </View>
-    //     )
-    // }
+    const { signed, garcom } = useAuth()
 
     if (signed) {
         return garcom ? <GarcomRoutes /> : <AppRoutes /> 

@@ -53,6 +53,7 @@ export const AuthProvider = ({ children }) => {
 
     function logout() {
         AsyncStorage.clear().then(() => setUser(null))
+        setGarcom(false)
         websocketService.disconnect()
     }
 

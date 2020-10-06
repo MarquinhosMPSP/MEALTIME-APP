@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { SafeAreaView, StyleSheet, TextInput, Button, View, Text, ImageBackground, TouchableOpacity, Alert } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -8,38 +8,67 @@ import reservationService from '../../services/reservationService';
 import websocketService from '../../services/websocketService'
 
 const Restaurante = ({ route, navigation }) => {
+   
+    const interval = useRef(null)
+    const dateRef = useRef(new Date())
+
     const { user } = useAuth()
     const { restaurante } = route.params
 
     const [date, setDate] = useState(new Date());
     const [qtdPessoas, setQtdPessoas] = useState(1);
 
+    const atualizarReserva = () => {
+        websocketService.from('atualizou reserva').subscribe(data => {
+            const reserva = data && data.length > 0 ? data[0] : null
+            if (reserva && reserva.status === 'aceita') {
+                Alert.alert(
+                    "Reserva aceita",
+                    `O restaurante confirmou sua reserva, o número da sua comanda é ${reserva.idComanda}`,
+                    [
+                        { text: "OK" }
+                    ],
+                    { cancelable: false }
+                );
+            }
+            if (reserva && reserva.status && reserva.status !== 'aceita') {
+                Alert.alert(
+                    `Reserva ${reserva.status}`,
+                    `Sua reserva foi ${reserva.status}!`,
+                    [
+                        { text: "OK" }
+                    ],
+                    { cancelable: false }
+                );
+            }
+        })
+    }
+
+    const validateTime = () => 
+        dateRef.current 
+        && (dateRef.current < new Date()) 
+        && (dateRef.current.getMinutes() < new Date().getMinutes())
+
+    const updateDateAutomatically = () => {
+        interval.current = setInterval(() => {
+            if (validateTime()) {
+                dateRef.current = new Date()
+                setDate(new Date())
+            }
+        }, 1000)
+    }
+
     useEffect(() => {
-        const atualizarReserva = () => {
-            websocketService.listenTo('atualizou reserva', data => {
-                const reserva = data && data.length > 0 ? data[0] : null
-                if (reserva && reserva.status === 'aceita') {
-                    Alert.alert(
-                        "Reserva aceita",
-                        `O restaurante confirmou sua reserva, o número da sua comanda é ${reserva.idComanda}`,
-                        [
-                            { text: "OK" }
-                        ],
-                        { cancelable: false }
-                    );
-                } else {
-                    Alert.alert(
-                        "Reserva cancelada",
-                        `Sua reserva foi cancelada!`,
-                        [
-                            { text: "OK" }
-                        ],
-                        { cancelable: false }
-                    );
-                }
-            })
-        }
+        clearInterval(interval.current)
+        updateDateAutomatically()
+    }, [date])
+    
+    useEffect(() => {
         atualizarReserva()
+        return function cleanup() {
+            clearInterval(interval.current)
+            websocketService.unsubscribe('atualizou reserva')
+        };
     }, [])
 
 
@@ -58,7 +87,19 @@ const Restaurante = ({ route, navigation }) => {
     }
 
     const checkAvailability = async () => {
+
         const result = await reservationService.checkAvailability(restaurante.idRestaurante, new Date(date).toISOString(), qtdPessoas)
+
+        if (result && result.status === 500) {
+            Alert.alert(
+                "Data inválida!",
+                `${result.data && result.data.message ? result.data.message : 'Por favor, selecione uma data válida'}`,
+                [
+                    { text: "OK" }
+                ],
+                { cancelable: false }
+            );
+        }
 
         if (result.mesasDisponiveis && result.mesasDisponiveis.length > 0) {
             Alert.alert(
@@ -73,16 +114,16 @@ const Restaurante = ({ route, navigation }) => {
                 ],
                 { cancelable: false }
             );
-            return
+        } else {
+            Alert.alert(
+                "Sem mesas disponíveis",
+                `O restaurante está lotado para essa data e horário, tente novamente!`,
+                [
+                    { text: "OK" }
+                ],
+                { cancelable: false }
+            );
         }
-        Alert.alert(
-            "Sem mesas disponíveis",
-            `O restaurante está lotado para essa data e horário, tente novamente!`,
-            [
-                { text: "OK" }
-            ],
-            { cancelable: false }
-        );
     }
 
     const increase = () => {
@@ -101,7 +142,7 @@ const Restaurante = ({ route, navigation }) => {
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
-        setDate(currentDate);
+        setDate(currentDate)
     };
 
     const goToFoodMenu = () => navigation.navigate('Cardapio', { idRestaurante: restaurante.idRestaurante, nomeRestaurante: restaurante.nomeRestaurante, view: true })
@@ -121,12 +162,12 @@ const Restaurante = ({ route, navigation }) => {
                     <View style={styles.btnBox}>
                         <TouchableOpacity
                             onPress={decrease}>
-                            <Icon name="remove-circle" style={styles.incDecBtn} />
+                            <Icon name="remove-circle" style={styles.qtdButton} />
                         </TouchableOpacity>
                         <Text style={styles.text4}>{qtdPessoas}</Text>
                         <TouchableOpacity
                             onPress={increase}>
-                            <Icon name="add-circle" style={styles.incDecBtn} />
+                            <Icon name="add-circle" style={styles.qtdButton} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -144,6 +185,7 @@ const Restaurante = ({ route, navigation }) => {
                         value={date}
                         mode='datetime'
                         is24Hour={true}
+                        minimumDate={new Date()}
                         display="default"
                         locale="pt-BR"
                         onChange={onChange} />
@@ -209,7 +251,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     text4: {
-        fontSize: 20
+        fontSize: 20, 
+        marginTop: 5
     },
     imagemContainer: {
         backgroundColor: '#000'
@@ -259,10 +302,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         marginTop: 10
     },
-    incDecBtn: {
-        fontSize: 30,
+    qtdButton: {
+        fontSize: 40,
         color: '#ffc127',
-        marginHorizontal: 10
+        marginHorizontal: 10,
     },
     buttonFinaliza: {
         marginLeft: 25,

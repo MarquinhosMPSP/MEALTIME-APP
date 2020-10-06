@@ -16,7 +16,15 @@ const restaurantService = {
         } catch (error) {
             return error.response           
         }
-    }
+    },
+    async getRestaurantTables(idRestaurante) {
+        try {
+            const response = await api.get('mesas/restaurante/'+idRestaurante)
+            return response ? response.data : []
+        } catch (error) {
+            return error.response           
+        }
+    },
 }
 
 export default restaurantService

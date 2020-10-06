@@ -35,6 +35,14 @@ const reservationService = {
             return error.response
         }
     },
+    async getOrderPadsAndTables(idRestaurante) {
+        try {
+            const response = await api.get('reservas/mesas-comandas/' + idRestaurante)
+            return response ? response.data : []
+        } catch (error) {
+            return error.response
+        }
+    },
 }
 
 export default reservationService

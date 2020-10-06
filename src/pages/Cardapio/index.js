@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, FlatList, Image, TextInput, ScrollView } from "react-native";
+import { View, SafeAreaView, StyleSheet, Text, TouchableOpacity, FlatList, Modal, TextInput, ScrollView } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Dimensions } from "react-native";
 import restaurantService from '../../services/restaurantService'
@@ -13,6 +13,9 @@ const Cardapio = ({ route: { params }, navigation }) => {
     const [pedidos, setPedidos] = useState([])
     const [data, setData] = useState([])
     const [changes, setChanges] = useState(0)
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [observations, setObservations] = useState("");
 
     initializeItem = data => data.map(item => ({ ...item, qtd: 0, total: (item.precoCalculado || 0).toFixed(2) }))
 
@@ -23,11 +26,14 @@ const Cardapio = ({ route: { params }, navigation }) => {
         setChanges(changes + 1)
     }
 
-    const addToCart = async() => {
+    const clearObservations = () => items.forEach(item => item.observacoes = null)
+
+    const addToCart = async () => {
         const pedidosSelecionados = items.filter(item => item.qtd > 0)
         if (pedidosSelecionados && pedidosSelecionados.length > 0) {
             const data = { pedidos: pedidosSelecionados, idComanda: params.idComanda, dataReserva: params.dataReserva, nomeRestaurante: params.nomeRestaurante }
             await orderService.makeOrder(data)
+            clearObservations()
         }
     }
 
@@ -40,7 +46,7 @@ const Cardapio = ({ route: { params }, navigation }) => {
     }
 
     useEffect(() => {
-        const getRestaurantMenu = async() => {
+        const getRestaurantMenu = async () => {
             let data = await restaurantService.getRestaurantMenu(params.idRestaurante)
             if (data && data.length > 0) {
                 data = initializeItem(data)
@@ -50,6 +56,21 @@ const Cardapio = ({ route: { params }, navigation }) => {
         }
         getRestaurantMenu()
     }, [])
+
+    const openModal = item => {
+        setSelectedItem(item)
+        setModalVisible(value => !value)
+    }
+   
+    const addObservations = () => {
+        const itemIdx = items.findIndex(i => i.idItem === selectedItem.idItem)
+        if (items[itemIdx] && observations) {
+            const item = items[itemIdx]
+            item.observacoes = observations
+        }
+        setObservations("")
+        setModalVisible(false)
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -61,7 +82,7 @@ const Cardapio = ({ route: { params }, navigation }) => {
                             <Text style={{ marginRight: 10 }}>Pedidos</Text>
                             <Icon name="local-mall" style={styles.icon} />
                         </TouchableOpacity>
-                    : null
+                        : null
                 }
             </View>
             <View style={styles.menuTitle}>
@@ -70,49 +91,102 @@ const Cardapio = ({ route: { params }, navigation }) => {
                     <TextInput placeholder="Encontre um item..."
                         autoCorrect={false}
                         autoCapitalize="none"
-                        onChangeText={text => searchOrders(text)} 
+                        onChangeText={text => searchOrders(text)}
                         style={styles.searchInput} />
                     <Icon name="search" style={styles.searchIcon} />
                 </View>
             </View>
             <ScrollView showsVerticalScrollIndicator={false}
-            horizontal={true}
-            style={styles.menuContent}>
+                horizontal={true}
+                style={styles.menuContent}>
                 <FlatList data={items}
-                keyExtractor={(item, index) => String(index)}
-                extraData={changes}
-                renderItem={({item}) => 
-                    <View style={styles.itemRow}>
-                        <View style={styles.itemContent}>
-                            <Text style={styles.itemTitle}>{item.nome}</Text>
-                            <Text>
-                                {item.descricao}
-                            </Text>
+                    keyExtractor={(item, index) => String(index)}
+                    extraData={changes}
+                    renderItem={({ item }) =>
+                        <View style={styles.itemRow}>
+                            <View style={styles.itemContent}>
+                                <Text style={styles.itemTitle}>{item.nome}</Text>
+                                <Text>
+                                    {item.descricao}
+                                </Text>
+                                {
+                                    !params.view ?
+                                    <TouchableOpacity style={styles.observations} onPress={() => openModal(item)}>
+                                        <Icon name="note-add" style={styles.icon2} />
+                                        <Text>Adicionar observação</Text>
+                                    </TouchableOpacity>
+                                    : null
+                                }
+                            </View>
+                            <View style={styles.itemActions}>
+                                {!params.view ?
+                                    <View style={styles.btnBox}>
+                                        <TouchableOpacity style={{ marginRight: 10 }}>
+                                            <Icon name="remove-circle" style={styles.qtdButton} onPress={() => handleItem(item, 'dec')} />
+                                        </TouchableOpacity>
+                                        <Text style={{ fontSize: 20, marginTop: 5 }}>{item.qtd}</Text>
+                                        <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => handleItem(item, 'add')}>
+                                            <Icon name="add-circle" style={styles.qtdButton} />
+                                        </TouchableOpacity>
+                                    </View> : null
+                                }
+                                <Text style={styles.total}>R${item.total}</Text>
+                                {
+                                    item && item.promocao ?
+                                        <Text style={styles.desconto}>-{item.promocao}%</Text>
+                                        : null
+                                }
+                            </View>
                         </View>
-                        <View style={styles.itemActions}>
-                            { !params.view ?
-                                <View style={styles.btnBox}>
-                                    <TouchableOpacity style={{ marginRight: 10 }}>
-                                        <Icon name="remove-circle" style={styles.incDecBtn} onPress={() => handleItem(item, 'dec')}/>
-                                    </TouchableOpacity>
-                                    <Text style={{ fontSize: 20 }}>{item.qtd}</Text>
-                                    <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => handleItem(item, 'add')}>
-                                        <Icon name="add-circle" style={styles.incDecBtn} />
-                                    </TouchableOpacity>
-                                </View> : null
-                            }
-                            <Text style={styles.total}>R${item.total}</Text>
-                        </View> 
-                    </View>
-                } />
+                    } />
             </ScrollView>
             { !params.view ?
                 <View style={{ margin: 20 }}>
                     <TouchableOpacity style={styles.orderBtn} onPress={addToCart}>
-                        <Text style={{ alignSelf: 'center', color: 'white', fontSize: 20}}>Fazer pedido</Text>
-                    </TouchableOpacity> 
+                        <Text style={{ alignSelf: 'center', color: 'white', fontSize: 20 }}>Fazer pedido</Text>
+                    </TouchableOpacity>
                 </View> : null
             }
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>
+                            Escreva as observações para esse prato:
+                        </Text>
+
+                        <TextInput
+                        style={{ backgroundColor: 'rgba(0, 0, 0, .1)', padding: 10, borderRadius: 10, margin: 10, width: "90%"}}
+                        multiline={true}
+                        numberOfLines={4}
+                        autoCapitalize="none"
+                        placeholder="Ex: sem picles e cebola..."
+                        onChangeText={(text) => setObservations(text)}/>
+
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity
+                            style={{ ...styles.openButton, backgroundColor: "transparent" }}
+                            
+                            onPress={() => {
+                                setModalVisible(!modalVisible);
+                            }}>
+                                <Text style={styles.textStyle}>Fechar</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                            style={{ ...styles.openButton, backgroundColor: "#ffc127" }}
+                            disabled={!observations}
+                            onPress={() => {
+                                addObservations(!modalVisible);
+                            }}>
+                                <Text style={styles.textStyle}>Salvar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     )
 }
@@ -172,6 +246,10 @@ const styles = StyleSheet.create({
         fontSize: 30,
         color: '#ffc127'
     },
+    icon2: {
+        fontSize: 20,
+        marginHorizontal: 5,
+    },
     itemRow: {
         flex: 1,
         flexDirection: 'row',
@@ -207,12 +285,16 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         fontSize: 24
     },
+    desconto: {
+        fontSize: 20,
+        color: '#d50000'
+    },
     btnBox: {
         flexDirection: "row",
         marginTop: 10
     },
-    incDecBtn: {
-        fontSize: 30,
+    qtdButton: {
+        fontSize: 40,
         color: '#ffc127',
     },
     orderBtn: {
@@ -220,6 +302,42 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#ffc127',
         borderRadius: 15,
+    },
+    observations: {
+        marginVertical: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#ffc127',
+        padding: 10,
+        borderRadius: 15,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(0, 0, 0, .3)',
+    },
+    modalView: {
+        margin: 20,
+        width: '80%',
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
+    openButton: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
     },
 })
 

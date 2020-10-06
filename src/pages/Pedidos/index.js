@@ -16,7 +16,7 @@ const Pedidos = ({ route: { params }}) => {
         if (data && data.pedidos) {
             const pedido = {
                 idPedido: data.pedidos.map(p => p.idPedido),
-                items: data.pedidos.sort((a,b) => new Date(b.dt_criacao) - new Date(a.dt_criacao)),
+                items: data.pedidos.sort((a,b) => new Date(b.idPedido) - new Date(a.idPedido)),
                 pedidos: data.pedidos.reduce((acc, cur, idx, arr) => {
                     const hasItem = acc.some(i => i.idItem === cur.idItem)
                     if (!hasItem) {
@@ -32,7 +32,7 @@ const Pedidos = ({ route: { params }}) => {
         }
     }
 
-    websocketService.listenTo('atualizou pedido', data => {
+    websocketService.from('atualizou pedido').subscribe(data => {
         if (data) mountOrders()
     })
 
@@ -112,7 +112,6 @@ const Pedidos = ({ route: { params }}) => {
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1
     },
     header: {
         margin: 20,
@@ -122,10 +121,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 16
-    },
-    menuTitle: {
-        marginHorizontal: 20,
-        marginTop: 10
     },
     card: {
         flex: 1,
@@ -153,16 +148,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         fontSize: 18,
     },
-    itemActions: {
-        width: '30%',
-        justifyContent: 'space-between',
-        alignItems: "flex-end"
-    },
-    itemTitle: {
-        fontSize: 17,
-        marginBottom: 10,
-        marginLeft: 10,
-    },
     statusTitle: {
         fontSize: 20,
         marginHorizontal: 10,
@@ -170,14 +155,6 @@ const styles = StyleSheet.create({
     total: {
         marginVertical: 10,
         fontSize: 24
-    },
-    btnBox: {
-        flexDirection: "row",
-        marginTop: 10
-    },
-    incDecBtn: {
-        fontSize: 30,
-        color: '#ffc127',
     },
     subtext: {
         marginBottom: 10,

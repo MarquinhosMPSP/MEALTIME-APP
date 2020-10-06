@@ -5,6 +5,8 @@ import { Dimensions } from "react-native";
 import { DateTime } from 'luxon'
 
 import reservationService from '../../services/reservationService'
+import websocketService from '../../services/websocketService'
+
 import { useAuth } from "../../contexts/auth";
 import { capitalize } from "../../utils";
 
@@ -18,9 +20,6 @@ const Reservas = ({navigation}) => {
     const cancelReservation = async(idReserva) => {
         if (idReserva) {
             const response = await reservationService.finishReservation(idReserva)
-            if (response && response.status === 200) {
-                await getReservations()
-            }
         }
     }
  
@@ -31,9 +30,21 @@ const Reservas = ({navigation}) => {
         }
     }
 
+    const atualizarReserva = () => {
+        websocketService.from('atualizou reserva').subscribe(() => {
+            getReservations()
+        })
+    }
+
     useEffect(() => {
         getReservations()
+        atualizarReserva()
+        return function cleanup() {
+            websocketService.unsubscribe('atualizou reserva')
+        }
     }, [])
+
+    const validateReservationDate = item => new Date(item.dataReserva).getDate() > new Date().getDate()
 
     return (
         <SafeAreaView style={styles.container}>
@@ -100,7 +111,7 @@ const Reservas = ({navigation}) => {
                         </View>
                         <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row', marginTop: 20, marginBottom: 10}}>
                                 <View style={{marginLeft: 10, width: '40%', alignSelf: 'center'}}>
-                                    <TouchableOpacity style={styles.buttonCardapio} onPress={() => navigation.navigate('Cardapio', { idComanda: item.idComanda, idReserva: item.idReserva, idRestaurante: item.idRestaurante, nomeRestaurante: item.nomeRestaurante, dataReserva: item.dataReserva, view: item.status !== 'aceita' })}>
+                                    <TouchableOpacity style={styles.buttonCardapio} onPress={() => navigation.navigate('Cardapio', { idComanda: item.idComanda, idReserva: item.idReserva, idRestaurante: item.idRestaurante, nomeRestaurante: item.nomeRestaurante, dataReserva: item.dataReserva, view: ((item.status !== 'aceita') || validateReservationDate(item)) })}>
                                     <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
                                         <View style={{width: '70%'}}>
                                             <Text style={{alignSelf: 'center', color: 'white'}}>Cardápio</Text>

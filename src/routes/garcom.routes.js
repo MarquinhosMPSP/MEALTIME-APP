@@ -22,7 +22,8 @@ const homeNavigationOptions = () => {
         headerRight: () => 
         <TouchableOpacity style={{ marginEnd: 20 }} onPress={() => logout()} >
             <Icon name="exit-to-app" style={{ fontSize: 25, color: '#666' }} />
-        </TouchableOpacity>
+        </TouchableOpacity>,
+        title: 'Home'
     }
 }
 
@@ -30,8 +31,8 @@ const GarcomRoutes = () => (
     <AuthStack.Navigator 
     screenOptions={{ ...navigationOptions}}>
         <AuthStack.Screen name="HomeGarcom" component={HomeGarcom} options={homeNavigationOptions} />
-        <AuthStack.Screen name="PedidoGarcom" component={PedidoGarcom}/>
-        <AuthStack.Screen name="ComandaGarcom" component={ComandaGarcom} />
+        <AuthStack.Screen name="PedidoGarcom" component={PedidoGarcom} options={{ title: 'Pedido' }}/>
+        <AuthStack.Screen name="ComandaGarcom" component={ComandaGarcom} options={{ title: 'Comanda' }}/>
     </AuthStack.Navigator>
 )
 
