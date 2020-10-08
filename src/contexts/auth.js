@@ -34,6 +34,8 @@ export const AuthProvider = ({ children }) => {
         if (response && response.data && response.status === 200) {
             const { usuario, token } = response.data
 
+            websocketService.connect(usuario.idUsuario)
+
             setUser(usuario)
 
             if (usuario && usuario.idPerfil === 3) {

@@ -58,7 +58,7 @@ const CadastroUser = ({navigation}) => {
                         style={styles.inputText2}
                         autoCorrect={false}
                         autoCapitalize="none"
-                        placeholder="Digite o seu login"
+                        placeholder="Digite o seu email"
                         onChangeText={login => setLogin(login)}
                         />
                     <Button 

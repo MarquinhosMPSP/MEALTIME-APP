@@ -37,7 +37,7 @@ const Login = ({navigation}) => {
                         style={styles.inputText}
                         autoCorrect={false}
                         autoCapitalize="none"
-                        placeholder="Digite seu usuário"
+                        placeholder="Digite seu email"
                         onChangeText={setUsername} />
                     <TextInput
                         style={styles.inputText2}

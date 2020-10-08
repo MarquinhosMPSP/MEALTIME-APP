@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView, StyleSheet, TextInput, View, Text, Dimensions, TouchableOpacity, Image, FlatList } from 'react-native'
+import { SafeAreaView, StyleSheet, TextInput, View, Text, TouchableOpacity, Image, FlatList } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useAuth } from '../../contexts/auth';
 import restaurantService from '../../services/restaurantService';
 import websocketService from '../../services/websocketService'
+import Images from '../../assets/images'
 
 const SearchBar = ({ search }) => (
     <View style={styles.searchBar}>
@@ -34,9 +35,7 @@ const Home = ({ navigation }) => {
                 setRestaurants(response)
             }
         }
-        const connecToWS = () => websocketService.connect(user.idUsuario)
         getRestaurants()
-        connecToWS()
     }, [])
 
     const resetData = () => {
@@ -92,7 +91,7 @@ const Home = ({ navigation }) => {
                                                     <Text style={styles.text}>{item.nomeRestaurante}</Text>
                                                 </View>
                                                 <Image
-                                                source={require('./../../assets/restaurants/default.png')}
+                                                source={Images[item.categoria] || require('../../assets/restaurants/default.png')}
                                                 style={styles.itemImgBox} />
                                             </TouchableOpacity>
                                         </View>

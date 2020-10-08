@@ -99,8 +99,7 @@ const ComandaGarcom = ({navigation, route: { params }}) => {
                 {
                     comanda && mesa ?
                     <View style={{ marginBottom: 30}}>
-                        <Text style={styles.text2}>A comanda criada: {comanda}</Text>
-                        <Text style={styles.text4}>Mesa reservada: {mesa}</Text>
+                        <Text style={styles.text2}>Comanda criada: {comanda}</Text>
                     </View> : null
                 }
             </View>

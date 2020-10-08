@@ -68,6 +68,17 @@ const Reservas = ({navigation}) => {
                                     <View style={styles.cardCol}>
                                         <Text style={styles.statusTitle}>RESTAURANTE</Text>
                                     </View>
+                                </View>   
+                        </View>
+                        <View>
+                            <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
+                                    <View style={styles.cardCol}>
+                                        <Text style={styles.status}>{item.nomeRestaurante}</Text>
+                                    </View>
+                                </View>   
+                        </View>
+                        <View style={{marginTop: 30}}>
+                            <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
                                     <View style={styles.cardCol}>
                                         <Text style={styles.statusTitle}>HORARIO</Text>
                                     </View>
@@ -78,9 +89,6 @@ const Reservas = ({navigation}) => {
                         </View>
                         <View>
                             <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
-                                    <View style={styles.cardCol}>
-                                        <Text style={styles.status}>{item.nomeRestaurante}</Text>
-                                    </View>
                                     <View style={styles.cardCol}>
                                         <Text style={styles.status}>{DateTime.fromISO(item.dataReserva).toFormat('dd/MM/yyyy - HH:mm')}</Text>
                                     </View>
@@ -111,7 +119,7 @@ const Reservas = ({navigation}) => {
                         </View>
                         <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row', marginTop: 20, marginBottom: 10}}>
                                 <View style={{marginLeft: 10, width: '40%', alignSelf: 'center'}}>
-                                    <TouchableOpacity style={styles.buttonCardapio} onPress={() => navigation.navigate('Cardapio', { idComanda: item.idComanda, idReserva: item.idReserva, idRestaurante: item.idRestaurante, nomeRestaurante: item.nomeRestaurante, dataReserva: item.dataReserva, view: ((item.status !== 'aceita') || validateReservationDate(item)) })}>
+                                    <TouchableOpacity style={styles.buttonCardapio} onPress={() => navigation.navigate('Cardapio', { idComanda: item.idComanda, idReserva: item.idReserva, idRestaurante: item.idRestaurante, nomeRestaurante: item.nomeRestaurante, dataReserva: item.dataReserva, view: ((!['aceita', 'ativa'].includes(item.status)) || validateReservationDate(item)) })}>
                                     <View style={{flex: 1, justifyContent: "space-between", flexDirection: 'row'}}>
                                         <View style={{width: '70%'}}>
                                             <Text style={{alignSelf: 'center', color: 'white'}}>Cardápio</Text>

@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     },
     itemContent: {
         marginHorizontal: 20,
-        fontSize: 18,
+        fontSize: 16,
     },
     statusTitle: {
         fontSize: 20,

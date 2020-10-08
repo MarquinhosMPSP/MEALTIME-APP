@@ -24,7 +24,9 @@ class WebsocketService {
     }
     
     disconnect() {
-        this._socket.close()
+        if (this._socket) {
+            this._socket.disconnect()
+        }
     }
 }
 

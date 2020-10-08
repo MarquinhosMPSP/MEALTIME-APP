@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { SafeAreaView, StyleSheet, TextInput, Button, View, Text, ImageBackground, TouchableOpacity, Alert } from 'react-native'
+import { SafeAreaView, StyleSheet, View, Text, ImageBackground, TouchableOpacity, Alert } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialIcons'
