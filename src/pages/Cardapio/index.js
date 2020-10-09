@@ -133,8 +133,11 @@ const Cardapio = ({ route: { params }, navigation }) => {
                                 <Text style={styles.total}>R${item.total}</Text>
                                 {
                                     item && item.promocao ?
+                                    <>
                                         <Text style={styles.desconto}>-{item.promocao}%</Text>
-                                        : null
+                                        <Text style={{fontSize: 16, color: '#d50000'}}> aplicado</Text>
+                                    </>
+                                    : null
                                 }
                             </View>
                         </View>

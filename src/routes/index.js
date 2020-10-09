@@ -13,7 +13,7 @@ const Routes = () => {
         return garcom ? <GarcomRoutes /> : <AppRoutes /> 
     }
 
-    return <AuthRoutes />
+    // return <AuthRoutes />
 }
 
 export default Routes

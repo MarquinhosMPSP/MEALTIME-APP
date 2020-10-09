@@ -24,18 +24,23 @@ const Home = ({ navigation }) => {
     const [restaurants, setRestaurants] = useState([])
     const [restaurantsByCategory, setRestaurantsByCategory] = useState({})
 
-    useEffect(() => {
-        const getRestaurants = async () => {
-            const response = await restaurantService.getRestaurants()
-            if (response && response.length > 0) {
-                let data = {}
-                response.forEach(i => data[i.categoria] = i.restaurantes)
-                setRestaurantsByCategory(data)
-                setData(response)
-                setRestaurants(response)
-            }
+    const getRestaurants = async () => {
+        console.log('iniciou o home/usuario');
+        const response = await restaurantService.getRestaurants()
+        if (response && response.length > 0) {
+            let data = {}
+            response.forEach(i => data[i.categoria] = i.restaurantes)
+            setRestaurantsByCategory(data)
+            setData(response)
+            setRestaurants(response)
         }
+    }
+
+    useEffect(() => {
         getRestaurants()
+        return function cleanup() {
+
+        }
     }, [])
 
     const resetData = () => {
